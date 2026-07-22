@@ -17,7 +17,7 @@ export class PlayerTurn {
             _('${you} must play a card or pass') :
             _('${actplayer} must play a card or pass')
         );
-      
+
         if (isCurrentPlayerActive) {
             const playableCardsIds = args.playableCardsIds; // returned by the PlayerTurn::getArgs
 

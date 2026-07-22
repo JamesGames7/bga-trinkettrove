@@ -150,6 +150,7 @@ class Game extends \Bga\GameFramework\Table
         // Set the colors of the players with HTML color code. The default below is red/green/blue/orange/brown. The
         // number of colors defined here must correspond to the maximum number of players allowed for the gams.
         $gameinfos = $this->getGameinfos();
+        shuffle($gameinfos['player_colors']);
         $default_colors = $gameinfos['player_colors'];
 
         foreach ($players as $player_id => $player) {
