@@ -19,13 +19,16 @@ declare(strict_types=1);
 namespace Bga\Games\TrinketTroveTest;
 
 use Bga\Games\TrinketTroveTest\States\PlayerTurn;
-use Bga\GameFramework\Components\Counters\PlayerCounter;
+use Bga\GameFramework\Components\Deck;
+use Card;
+
+require('Card.php');
 
 class Game extends \Bga\GameFramework\Table
 {
-    public static array $CARD_TYPES;
 
-    public PlayerCounter $playerEnergy;
+    public Deck $cards;
+    public array $cardList;
 
     /**
      * Your global variables labels:
@@ -40,32 +43,66 @@ class Game extends \Bga\GameFramework\Table
     {
         parent::__construct();
 
-        $this->playerEnergy = $this->bga->counterFactory->createPlayerCounter('energy');
+        $this->cards = $this->deckFactory->createDeck('cards');
 
-        self::$CARD_TYPES = [
-            1 => [
-                "card_name" => clienttranslate('Troll'), // ...
-            ],
-            2 => [
-                "card_name" => clienttranslate('Goblin'), // ...
-            ],
-            // ...
+        $this->cardList = [
+            new Card("Bell", 2, [10, 30], 6),
+            new Card("Bell", 2, [10, 30], 21),
+            new Card("Thimble", 2, [5, 35], 20),
+            new Card("Thimble", 2, [5, 35], 35),
+            new Card("Gear", 3, [5, 20, 55], 4),
+            new Card("Gear", 3, [5, 20, 55], 33),
+            new Card("Gear", 3, [5, 20, 55], 46),
+            new Card("Button", 3, [10, 25, 45], 7),
+            new Card("Button", 3, [10, 25, 45], 14),
+            new Card("Button", 3, [10, 25, 45], 34),
+            new Card("Key", 4, [10, 30, 30, 70], 3),
+            new Card("Key", 4, [10, 30, 30, 70], 28),
+            new Card("Key", 4, [10, 30, 30, 70], 31),
+            new Card("Key", 4, [10, 30, 30, 70], 44),
+            new Card("Shell", 4, [10, 20, 40, 60], 13),
+            new Card("Shell", 4, [10, 20, 40, 60], 32),
+            new Card("Shell", 4, [10, 20, 40, 60], 38),
+            new Card("Shell", 4, [10, 20, 40, 60], 45),
+            new Card("Bottlecap", 5, [5, 5, 5, 50, 90], 8),
+            new Card("Bottlecap", 5, [5, 5, 5, 50, 90], 11),
+            new Card("Bottlecap", 5, [5, 5, 5, 50, 90], 25),
+            new Card("Bottlecap", 5, [5, 5, 5, 50, 90], 42),
+            new Card("Bottlecap", 5, [5, 5, 5, 50, 90], 53),
+            new Card("Marble", 5, [5, 10, 20, 40, 80], 12),
+            new Card("Marble", 5, [5, 10, 20, 40, 80], 18),
+            new Card("Marble", 5, [5, 10, 20, 40, 80], 30),
+            new Card("Marble", 5, [5, 10, 20, 40, 80], 43),
+            new Card("Marble", 5, [5, 10, 20, 40, 80], 54),
+            new Card("Gem", 6, [10, 25, 25, 60, 60, 125], 2),
+            new Card("Gem", 6, [10, 25, 25, 60, 60, 125], 5),
+            new Card("Gem", 6, [10, 25, 25, 60, 60, 125], 37),
+            new Card("Gem", 6, [10, 25, 25, 60, 60, 125], 40),
+            new Card("Gem", 6, [10, 25, 25, 60, 60, 125], 51),
+            new Card("Gem", 6, [10, 25, 25, 60, 60, 125], 57),
+            new Card("Crayon", 6, [20, 10, 0, 80, 100, 120], 10),
+            new Card("Crayon", 6, [20, 10, 0, 80, 100, 120], 15),
+            new Card("Crayon", 6, [20, 10, 0, 80, 100, 120], 41),
+            new Card("Crayon", 6, [20, 10, 0, 80, 100, 120], 47),
+            new Card("Crayon", 6, [20, 10, 0, 80, 100, 120], 52),
+            new Card("Crayon", 6, [20, 10, 0, 80, 100, 120], 58),
+            new Card("Lure", 7, [5, 10, 15, 20, 25, 80, 175], 0),
+            new Card("Lure", 7, [5, 10, 15, 20, 25, 80, 175], 9),
+            new Card("Lure", 7, [5, 10, 15, 20, 25, 80, 175], 17),
+            new Card("Lure", 7, [5, 10, 15, 20, 25, 80, 175], 23),
+            new Card("Lure", 7, [5, 10, 15, 20, 25, 80, 175], 26),
+            new Card("Lure", 7, [5, 10, 15, 20, 25, 80, 175], 48),
+            new Card("Lure", 7, [5, 10, 15, 20, 25, 80, 175], 55),
+            new Card("Feather", 7, [5, 10, 25, 50, 80, 110, 145], 1),
+            new Card("Feather", 7, [5, 10, 25, 50, 80, 110, 145], 19),
+            new Card("Feather", 7, [5, 10, 25, 50, 80, 110, 145], 24),
+            new Card("Feather", 7, [5, 10, 25, 50, 80, 110, 145], 27),
+            new Card("Feather", 7, [5, 10, 25, 50, 80, 110, 145], 36),
+            new Card("Feather", 7, [5, 10, 25, 50, 80, 110, 145], 50),
+            new Card("Feather", 7, [5, 10, 25, 50, 80, 110, 145], 56),
+            new Card("Mirror", 8, [], 16),
+            new Card("Mirror", 8, [], 22)
         ];
-
-        /* example of notification decorator.
-        // automatically complete notification args when needed
-        $this->bga->notify->addDecorator(function(string $message, array $args) {
-            if (isset($args['player_id']) && !isset($args['player_name']) && str_contains($message, '${player_name}')) {
-                $args['player_name'] = $this->getPlayerNameById($args['player_id']);
-            }
-        
-            if (isset($args['card_id']) && !isset($args['card_name']) && str_contains($message, '${card_name}')) {
-                $args['card_name'] = self::$CARD_TYPES[$args['card_id']]['card_name'];
-                $args['i18n'][] = ['card_name'];
-            }
-            
-            return $args;
-        });*/
     }
 
     /**
@@ -132,7 +169,6 @@ class Game extends \Bga\GameFramework\Table
         $result["players"] = $this->getCollectionFromDb(
             "SELECT `player_id` AS `id`, `player_score` AS `score` FROM `player`"
         );
-        $this->playerEnergy->fillResult($result);
 
         // TODO: Gather all information about current game situation (visible by player $currentPlayerId).
 
@@ -145,13 +181,12 @@ class Game extends \Bga\GameFramework\Table
      */
     protected function setupNewGame($players, $options = [])
     {
-        $this->playerEnergy->initDb(array_keys($players), initialValue: 2);
-
         // Set the colors of the players with HTML color code. The default below is red/green/blue/orange/brown. The
         // number of colors defined here must correspond to the maximum number of players allowed for the gams.
         $gameinfos = $this->getGameinfos();
         shuffle($gameinfos['player_colors']);
         $default_colors = $gameinfos['player_colors'];
+        $query_values = [];
 
         foreach ($players as $player_id => $player) {
             // Now you can access both $player_id and $player array
@@ -187,6 +222,17 @@ class Game extends \Bga\GameFramework\Table
         // $this->playerStats->init('player_teststat1', 0);
 
         // TODO: Setup the initial game situation here.
+        $cardsToWrite = [];
+        foreach ($this->cardList as $card) {
+            $cardsToWrite[] = [
+                "type" => $card->getName(),
+                "type_arg" => $card->getPos(),
+                "nbr" => 2
+            ];
+        }
+        $this->cards->createCards($cardsToWrite, 'deck');
+        
+        $this->cards->moveCards(array_map(fn($card) => $card["id"], $this->cards->getCardsOfType("Mirror")), "temp");
 
         // Activate first player once everything has been initialized and ready.
         $this->activeNextPlayer();

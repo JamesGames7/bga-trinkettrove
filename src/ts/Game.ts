@@ -47,18 +47,6 @@ export class Game {
         // Setting up player boards
         Object.entries(gamedatas.players).forEach(([pId, player]) => {
             const playerId = Number(pId);
-            // example of setting up players boards
-            this.bga.playerPanels.getElement(playerId).insertAdjacentHTML('beforeend', `
-                
-            `);
-
-            // example of adding a div for each player
-            document.getElementById('player-tables').insertAdjacentHTML('beforeend', `
-                <div id="player-table-${player.id}">
-                    <strong>${player.name}</strong>
-                    <div>Player zone content goes here</div>
-                </div>
-            `);
         });
         
         // TODO: Set up your game interface here, according to "gamedatas"

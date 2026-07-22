@@ -12,15 +12,6 @@ class PlayerTurn {
      * This method is called each time we are entering the game state. You can use this method to perform some user interface changes at this moment.
      */
     onEnteringState(args, isCurrentPlayerActive) {
-        this.bga.statusBar.setTitle(isCurrentPlayerActive ?
-            _('${you} must play a card or pass') :
-            _('${actplayer} must play a card or pass'));
-        if (isCurrentPlayerActive) {
-            const playableCardsIds = args.playableCardsIds; // returned by the PlayerTurn::getArgs
-            // Add test action buttons in the action status bar, simulating a card click:
-            playableCardsIds.forEach(cardId => this.bga.statusBar.addActionButton(_('Play card with id ${card_id}').replace('${card_id}', `${cardId}`), () => this.onCardClick(cardId)));
-            this.bga.statusBar.addActionButton(_('Pass'), () => this.bga.actions.performAction("actPass"), { color: 'secondary' });
-        }
     }
     /**
      * This method is called each time we are leaving the game state. You can use this method to perform some user interface changes at this moment.
@@ -80,17 +71,6 @@ class Game {
         // Setting up player boards
         Object.entries(gamedatas.players).forEach(([pId, player]) => {
             const playerId = Number(pId);
-            // example of setting up players boards
-            this.bga.playerPanels.getElement(playerId).insertAdjacentHTML('beforeend', `
-                
-            `);
-            // example of adding a div for each player
-            document.getElementById('player-tables').insertAdjacentHTML('beforeend', `
-                <div id="player-table-${player.id}">
-                    <strong>${player.name}</strong>
-                    <div>Player zone content goes here</div>
-                </div>
-            `);
         });
         // TODO: Set up your game interface here, according to "gamedatas"
         // Setup game notifications to handle (see "setupNotifications" method below)

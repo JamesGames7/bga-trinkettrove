@@ -10,7 +10,7 @@ interface TrinketTroveTestGamedatas extends Gamedatas<TrinketTroveTestPlayer> {
  * Describe here the types for your state args
  */
 interface PlayerTurnArgs {
-    playableCardsIds: number[];
+    
 }
 
 /*

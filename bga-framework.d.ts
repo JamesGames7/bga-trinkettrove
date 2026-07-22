@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 type ElementOrId = Element | string;
 
 declare const define: Function;
