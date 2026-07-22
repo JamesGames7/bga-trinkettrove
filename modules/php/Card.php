@@ -29,4 +29,8 @@ class Card {
     public function getPos() {
         return $this->pos;
     }
+
+    public function getInfo($id = -1) {
+        return ["id" => $id, "name" => $this->name, "value" => $this->value, "modifiers" => $this->modifiers, "pos" => $this->pos];
+    }
 }

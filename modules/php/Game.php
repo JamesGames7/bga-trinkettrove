@@ -2,7 +2,7 @@
 /**
  *------
  * BGA framework: Gregory Isabelli & Emmanuel Colin & BoardGameArena
- * TrinketTroveTest implementation : © <Your name here> <Your email address here>
+ * TrinketTroveTest implementation : © Connor Rask connor@srask.ca
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -170,6 +170,8 @@ class Game extends \Bga\GameFramework\Table
             "SELECT `player_id` AS `id`, `player_score` AS `score` FROM `player`"
         );
 
+        $result["hand"] = array_map(fn($card) => $this->cardList[$card["type_arg"]]->getInfo(intval($card["id"])), array_values($this->cards->getCardsInLocation("hand", $currentPlayerId)));
+
         // TODO: Gather all information about current game situation (visible by player $currentPlayerId).
 
         return $result;
@@ -223,16 +225,26 @@ class Game extends \Bga\GameFramework\Table
 
         // TODO: Setup the initial game situation here.
         $cardsToWrite = [];
+        $i = 0;
         foreach ($this->cardList as $card) {
             $cardsToWrite[] = [
                 "type" => $card->getName(),
-                "type_arg" => $card->getPos(),
+                "type_arg" => $i,
                 "nbr" => 2
             ];
+            $i++;
         }
         $this->cards->createCards($cardsToWrite, 'deck');
         
         $this->cards->moveCards(array_map(fn($card) => $card["id"], $this->cards->getCardsOfType("Mirror")), "temp");
+        $this->cards->shuffle('deck');
+        
+        foreach ($players as $id => $info) {
+            $this->cards->pickCards(4, "deck", $id);
+        }
+
+        $this->cards->moveAllCardsInLocation("temp", "deck");
+        $this->cards->shuffle('deck');
 
         // Activate first player once everything has been initialized and ready.
         $this->activeNextPlayer();

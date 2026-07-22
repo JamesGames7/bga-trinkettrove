@@ -4,6 +4,7 @@ interface TrinketTroveTestPlayer extends Player {
 
 interface TrinketTroveTestGamedatas extends Gamedatas<TrinketTroveTestPlayer> {
     // Add here variables you set up in getAllDatas
+    hand: [Card]
 }
 
 /*
@@ -11,6 +12,14 @@ interface TrinketTroveTestGamedatas extends Gamedatas<TrinketTroveTestPlayer> {
  */
 interface PlayerTurnArgs {
     
+}
+
+interface Card {
+    id: number,
+    name: String,
+    value: number,
+    modifiers: [number],
+    pos: number
 }
 
 /*

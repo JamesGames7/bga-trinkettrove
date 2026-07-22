@@ -1,8 +1,16 @@
 import { PlayerTurn } from "./States/PlayerTurn";
+import { BgaAnimations, BgaCards } from "./libs";
 
 export class Game {
     public bga: Bga<TrinketTroveTestPlayer, TrinketTroveTestGamedatas>;
     private gamedatas: TrinketTroveTestGamedatas;
+
+    private animationManager: InstanceType<typeof BgaAnimations.Manager>;
+    private cardsManager: InstanceType<typeof BgaCards.Manager<Card>>;
+
+    private marketStock: InstanceType<typeof BgaCards.LineStock<Card>>
+    private bidStock: InstanceType<typeof BgaCards.HandStock<Card>>
+    private handStock: InstanceType<typeof BgaCards.HandStock<Card>>
 
     private playerTurn: PlayerTurn;
 
@@ -39,18 +47,53 @@ export class Game {
         console.log( "Starting game setup" );
         this.gamedatas = gamedatas;
 
+        this.animationManager = new BgaAnimations.Manager({
+            animationsActive: () => this.bga.gameui.bgaAnimationsActive(),
+        });
+
+        this.cardsManager = new BgaCards.Manager({
+            animationManager: this.animationManager,
+            type: "trinket",
+            getId: (card) => card.id,
+
+            cardWidth: 128,
+            cardHeight: 178,
+            cardBorderRadius: '5px',
+
+            isCardVisible: () => true,
+
+            setupFrontDiv(card, element) {
+                element.style.backgroundPositionX = `-${card.pos % 10}00%`;
+                element.style.backgroundPositionY = `-${Math.floor(card.pos / 10)}00%`;
+            },
+            setupBackDiv(card, element) {
+                element.style.backgroundPosition = `-900% -200%`
+            }
+        })
+
         // Example to add a div on the game area
         this.bga.gameArea.getElement().insertAdjacentHTML('beforeend', `
             <div id="player-tables"></div>
         `);
         
-        // Setting up player boards
-        Object.entries(gamedatas.players).forEach(([pId, player]) => {
-            const playerId = Number(pId);
-        });
-        
         // TODO: Set up your game interface here, according to "gamedatas"
+        $('game_play_area').insertAdjacentHTML("beforeend", `
+            <div id="marketStock" class="whiteblock"></div>
+            <div id="bidStock" class="whiteblock"></div>
+            <div id="playerOrder" class="whiteblock"></div>
+            <div id="handStock"></div>
+        `)
         
+        this.handStock = new BgaCards.HandStock(this.cardsManager, $('handStock'), {
+            sort(a, b) {
+                if (a.value - b.value != 0) {
+                    return a.value - b.value
+                }
+                return a.name < b.name ? -1 : 1
+            },
+        });
+
+        this.handStock.addCards(gamedatas.hand)
 
         // Setup game notifications to handle (see "setupNotifications" method below)
         this.setupNotifications();
