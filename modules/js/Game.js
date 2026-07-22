@@ -48,6 +48,7 @@ const BgaCards = await globalThis.importEsmLib('bga-cards', '1.x');
 
 class Game {
     constructor(bga) {
+        this.marketStock = [];
         console.log('trinkettrovetest constructor');
         this.bga = bga;
         // Declare the State classes
@@ -99,8 +100,27 @@ class Game {
         `);
         // TODO: Set up your game interface here, according to "gamedatas"
         $('game_play_area').insertAdjacentHTML("beforeend", `
+            <div id="marketStock" class="whiteblock"><div id="marketHorizontal"></div></div>
+            <div id="bidStock" class="whiteblock"></div>
+            <div id="playerOrder" class="whiteblock"></div>
             <div id="handStock"></div>
         `);
+        let i = 0;
+        gamedatas.market.forEach(slot => {
+            $('marketHorizontal').insertAdjacentHTML(`beforeend`, `
+                <div id="marketSlot-${i}"></div>
+            `);
+            this.marketStock.push(new BgaCards.LineStock(this.cardsManager, $('marketSlot-' + i), {
+                direction: "column",
+            }));
+            let j = 0;
+            slot.forEach(card => {
+                this.marketStock[i].addCard(card);
+                this.marketStock[i].getCardElement(card).classList.add("item-" + j);
+                j++;
+            });
+            i++;
+        });
         this.handStock = new BgaCards.HandStock(this.cardsManager, $('handStock'), {
             sort(a, b) {
                 if (a.value - b.value != 0) {
@@ -139,6 +159,10 @@ class Game {
         this.bga.notifications.setupPromiseNotifications({
         // logger: console.log
         });
+    }
+    // TODO: from this point and below, you can write your game notifications handling methods
+    async notif_marketAdded(args) {
+        console.log(args);
     }
 }
 

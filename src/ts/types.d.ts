@@ -4,6 +4,8 @@ interface TrinketTroveTestPlayer extends Player {
 
 interface TrinketTroveTestGamedatas extends Gamedatas<TrinketTroveTestPlayer> {
     // Add here variables you set up in getAllDatas
+    market: [[Card]]
+    timer: number
     hand: [Card]
 }
 

@@ -8,7 +8,7 @@ export class Game {
     private animationManager: InstanceType<typeof BgaAnimations.Manager>;
     private cardsManager: InstanceType<typeof BgaCards.Manager<Card>>;
 
-    private marketStock: InstanceType<typeof BgaCards.LineStock<Card>>
+    private marketStock: InstanceType<typeof BgaCards.LineStock<Card>>[] = [];
     private bidStock: InstanceType<typeof BgaCards.HandStock<Card>>
     private handStock: InstanceType<typeof BgaCards.HandStock<Card>>
 
@@ -78,11 +78,32 @@ export class Game {
         
         // TODO: Set up your game interface here, according to "gamedatas"
         $('game_play_area').insertAdjacentHTML("beforeend", `
-            <div id="marketStock" class="whiteblock"></div>
+            <div id="marketStock" class="whiteblock"><div id="marketHorizontal"></div></div>
             <div id="bidStock" class="whiteblock"></div>
             <div id="playerOrder" class="whiteblock"></div>
             <div id="handStock"></div>
         `)
+
+        let i: number = 0;
+        gamedatas.market.forEach(slot => {
+            $('marketHorizontal').insertAdjacentHTML(`beforeend`, `
+                <div id="marketSlot-${i}"></div>
+            `)
+            this.marketStock.push(new BgaCards.LineStock(this.cardsManager, $('marketSlot-' + i), {
+                direction: "column",
+            }))
+
+            let j: number = 0;
+            slot.forEach(card => {
+                this.marketStock[i].addCard(card);
+
+                this.marketStock[i].getCardElement(card).classList.add("item-" + j)
+                
+                j++
+            })
+
+            i++
+        })
         
         this.handStock = new BgaCards.HandStock(this.cardsManager, $('handStock'), {
             sort(a, b) {
@@ -134,6 +155,9 @@ export class Game {
     }
     
     // TODO: from this point and below, you can write your game notifications handling methods
+    async notif_marketAdded(args) {
+        console.log(args);
+    }
     
     /*
     Example:

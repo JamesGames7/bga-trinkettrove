@@ -56,3 +56,44 @@
   background-image: url("img/cards.jpg");
   background-size: 1000% 600%;
 }
+
+#marketHorizontal {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  gap: 10px;
+  padding-top: 164px;
+}
+#marketHorizontal .trinket {
+  margin-top: -164px;
+}
+#marketHorizontal .trinket.item-1 {
+  margin-left: 60px;
+}
+#marketHorizontal .trinket.item-2 {
+  margin-left: 120px;
+}
+#marketHorizontal .trinket.item-3 {
+  margin-left: 180px;
+}
+#marketHorizontal .trinket.item-4 {
+  margin-left: 240px;
+}
+#marketHorizontal .trinket.item-5 {
+  margin-left: 300px;
+}
+#marketHorizontal .trinket.item-6 {
+  margin-left: 360px;
+}
+#marketHorizontal .trinket.item-7 {
+  margin-left: 420px;
+}
+#marketHorizontal .trinket.item-8 {
+  margin-left: 480px;
+}
+#marketHorizontal .trinket.item-9 {
+  margin-left: 540px;
+}
+#marketHorizontal .trinket.item-10 {
+  margin-left: 600px;
+}

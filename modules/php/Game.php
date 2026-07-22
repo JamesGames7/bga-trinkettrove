@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace Bga\Games\TrinketTroveTest;
 
-use Bga\Games\TrinketTroveTest\States\PlayerTurn;
+use Bga\Games\TrinketTroveTest\States\RoundStart;
 use Bga\GameFramework\Components\Deck;
 use Card;
 
@@ -170,7 +170,12 @@ class Game extends \Bga\GameFramework\Table
             "SELECT `player_id` AS `id`, `player_score` AS `score` FROM `player`"
         );
 
-        $result["hand"] = array_map(fn($card) => $this->cardList[$card["type_arg"]]->getInfo(intval($card["id"])), array_values($this->cards->getCardsInLocation("hand", $currentPlayerId)));
+        $result["market"] = [];
+        for ($i = 0; $i < $this->getPlayersNumber(); $i++) {
+            $result["market"][] = $this->convertCards($this->cards->getCardsInLocation("market", $i));
+        }
+        $result["timer"] = $this->cards->countCardsInLocation("timer");
+        $result["hand"] = $this->convertCards($this->cards->getCardsInLocation("hand", $currentPlayerId));
 
         // TODO: Gather all information about current game situation (visible by player $currentPlayerId).
 
@@ -246,10 +251,18 @@ class Game extends \Bga\GameFramework\Table
         $this->cards->moveAllCardsInLocation("temp", "deck");
         $this->cards->shuffle('deck');
 
+        // TODO: 5+ people
+        $this->cards->pickCardsForLocation(6, "deck", "timer");
+        $this->cards->shuffle("timer");
+
         // Activate first player once everything has been initialized and ready.
         $this->activeNextPlayer();
 
-        return PlayerTurn::class;
+        return RoundStart::class;
+    }
+
+    public function convertCards(array $cards) {
+        return array_map(fn($card) => $this->cardList[$card["type_arg"]]->getInfo(intval($card["id"])), array_values($cards));
     }
 
     /**
