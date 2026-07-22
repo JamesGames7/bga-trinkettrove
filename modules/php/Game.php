@@ -177,8 +177,6 @@ class Game extends \Bga\GameFramework\Table
         $result["timer"] = $this->cards->countCardsInLocation("timer");
         $result["hand"] = $this->convertCards($this->cards->getCardsInLocation("hand", $currentPlayerId));
 
-        // TODO: Gather all information about current game situation (visible by player $currentPlayerId).
-
         return $result;
     }
 

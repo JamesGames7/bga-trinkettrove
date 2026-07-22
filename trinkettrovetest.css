@@ -62,10 +62,10 @@
   justify-content: center;
   align-items: start;
   gap: 10px;
-  padding-top: 164px;
+  padding-top: 160px;
 }
 #marketHorizontal .trinket {
-  margin-top: -164px;
+  margin-top: -160px;
 }
 #marketHorizontal .trinket.item-1 {
   margin-left: 60px;
@@ -97,3 +97,31 @@
 #marketHorizontal .trinket.item-10 {
   margin-left: 600px;
 }
+
+.playerTile {
+  background-image: url("img/tiles.jpg");
+  background-size: 1400%, 200%;
+  width: 98px;
+  height: 124px;
+}
+
+#playerOrder {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  gap: 50px;
+}
+
+.firstLast {
+  background-image: url("img/firstLast.jpg");
+  width: 50px;
+  height: 184px;
+  background-size: 200% 100%;
+}
+
+#last {
+  background-position-x: -100%;
+  rotate: 180deg;
+}
+
+/*# sourceMappingURL=trinkettrovetest.css.map */

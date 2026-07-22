@@ -14,6 +14,8 @@ export class Game {
 
     private playerTurn: PlayerTurn;
 
+    private colorOrder: String[] = ["85568d", "8f2f27", "379d9b", "dc7b70", "db812e", "nimbus", "198a43", "2c5b8d", "efae49", "4d5b2b", "3c2a56", "795133", "404e6c", "2a2a2a"]
+
     constructor(bga: Bga<TrinketTroveTestPlayer, TrinketTroveTestGamedatas>) {
         console.log('trinkettrovetest constructor');
         this.bga = bga;
@@ -95,15 +97,34 @@ export class Game {
 
             let j: number = 0;
             slot.forEach(card => {
-                this.marketStock[i].addCard(card);
-
+                this.marketStock[i].addCard(card)
                 this.marketStock[i].getCardElement(card).classList.add("item-" + j)
-                
                 j++
             })
 
             i++
         })
+
+        // TODO change
+        gamedatas.playerorder.forEach(id => {
+            let info: TrinketTroveTestPlayer = gamedatas.players[id]
+
+
+            let index: number = this.colorOrder.indexOf(info.color)
+            console.log(index)
+
+            $('playerOrder').insertAdjacentHTML(`beforeend`, `
+                <div id="playerTile-${info.id}" class="playerTile" style="background-position-x: ${`-${index}00%`}"></div>
+            `)
+        })
+
+        $("playerOrder").insertAdjacentHTML("afterbegin", `
+            <div id="first" class="firstLast"></div>
+        `)
+
+        $("playerOrder").insertAdjacentHTML("beforeend", `
+            <div id="last" class="firstLast"></div>
+        `)
         
         this.handStock = new BgaCards.HandStock(this.cardsManager, $('handStock'), {
             sort(a, b) {
