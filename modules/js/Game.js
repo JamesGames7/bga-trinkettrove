@@ -3,7 +3,7 @@
  * onEnteringState, onLeavingState and onPlayerActivationChange are predefined names that will be called by the framework.
  * When executing code in this state, you can access the args using this.args
  */
-class PlayerTurn {
+class MakeBid {
     constructor(game, bga) {
         this.game = game;
         this.bga = bga;
@@ -12,6 +12,14 @@ class PlayerTurn {
      * This method is called each time we are entering the game state. You can use this method to perform some user interface changes at this moment.
      */
     onEnteringState(args, isCurrentPlayerActive) {
+        if (isCurrentPlayerActive) {
+            this.game.handStock.setSelectionMode("multiple");
+            this.game.handStock.onSelectionChange = (selection, lastChange) => {
+                this.bga.statusBar.setTitle("${you} must make your bid (" + selection.reduce((acc, cur) => acc + cur.value, 0) + " selected)");
+            };
+            this.bga.statusBar.addActionButton("Confirm", () => this.confirmBid());
+            this.bga.statusBar.addActionButton("Reset", () => this.game.handStock.unselectAll(), { color: "secondary" });
+        }
     }
     /**
      * This method is called each time we are leaving the game state. You can use this method to perform some user interface changes at this moment.
@@ -24,15 +32,12 @@ class PlayerTurn {
      * If your state is not a MULTIPLE_ACTIVE_PLAYER one, you can delete this function.
      */
     onPlayerActivationChange(args, isCurrentPlayerActive) {
+        if (!isCurrentPlayerActive) {
+            this.game.handStock.setSelectionMode("none");
+        }
     }
-    onCardClick(card_id) {
-        console.log('onCardClick', card_id);
-        this.bga.actions.performAction("actPlayCard", {
-            card_id,
-        }).then(() => {
-            // What to do after the server call if it succeeded
-            // (most of the time, nothing, as the game will react to notifs / change of state instead, so you can delete the `then`)
-        });
+    confirmBid() {
+        this.bga.actions.performAction('actMakeBid', { cards: [this.game.handStock.getSelection().map((card) => card.id)] });
     }
 }
 
@@ -53,8 +58,8 @@ class Game {
         console.log('trinkettrovetest constructor');
         this.bga = bga;
         // Declare the State classes
-        this.playerTurn = new PlayerTurn(this, bga);
-        this.bga.states.register('PlayerTurn', this.playerTurn);
+        this.makeBid = new MakeBid(this, bga);
+        this.bga.states.register('MakeBid', this.makeBid);
         // Uncomment the next line to show debug informations about state changes in the console. Remove before going to production!
         // this.bga.states.logger = console.log;
         // Here, you can init the global variables of your user interface
@@ -90,6 +95,17 @@ class Game {
             setupFrontDiv(card, element) {
                 element.style.backgroundPositionX = `-${card.pos % 10}00%`;
                 element.style.backgroundPositionY = `-${Math.floor(card.pos / 10)}00%`;
+                gameui.addTooltipHtml(element.id, `
+                    <div style="display: grid; grid-auto-flow: column; gap: 10px">
+                        <div style="width: 128px; height: 178px; background-position: -${card.pos % 10}00% -${Math.floor(card.pos / 10)}00%" class="trinket-front"></div>
+                        <div>
+                            <div style="width: 128px; display: flex; justify-content: center;"><strong>${_(card.name.toString())}</strong></div>
+                            <div><strong>${_("Value: ")}</strong>${card.value}</div>
+                            <div><strong>${_("Points: ")}</strong></div>
+                            <div>${card.points.join(", ")}</div>
+                        </div>
+                    </div>
+                `);
             },
             setupBackDiv(card, element) {
                 element.style.backgroundPosition = `-900% -200%`;

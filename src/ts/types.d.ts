@@ -12,7 +12,7 @@ interface TrinketTroveTestGamedatas extends Gamedatas<TrinketTroveTestPlayer> {
 /*
  * Describe here the types for your state args
  */
-interface PlayerTurnArgs {
+interface MakeBidArgs {
     
 }
 
@@ -20,7 +20,7 @@ interface Card {
     id: number,
     name: String,
     value: number,
-    modifiers: [number],
+    points: [number],
     pos: number
 }
 

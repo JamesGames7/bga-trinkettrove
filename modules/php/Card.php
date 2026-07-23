@@ -3,14 +3,14 @@
 class Card {
     private string $name;
     private int $value;
-    private array $modifiers;
+    private array $points;
     private int $pos;
 
-    public function __construct(string $name, int $value, array $modifiers, int $pos)
+    public function __construct(string $name, int $value, array $points, int $pos)
     {
         $this->name = $name;
         $this->value = $value;
-        $this->modifiers = $modifiers;
+        $this->points = $points;
         $this->pos = $pos;
     }
 
@@ -22,8 +22,8 @@ class Card {
         return $this->value;
     }
 
-    public function getModifiers() {
-        return $this->modifiers;
+    public function getPoints() {
+        return $this->points;
     }
 
     public function getPos() {
@@ -31,6 +31,6 @@ class Card {
     }
 
     public function getInfo($id = -1) {
-        return ["id" => $id, "name" => $this->name, "value" => $this->value, "modifiers" => $this->modifiers, "pos" => $this->pos];
+        return ["id" => $id, "name" => $this->name, "value" => $this->value, "points" => $this->points, "pos" => $this->pos];
     }
 }

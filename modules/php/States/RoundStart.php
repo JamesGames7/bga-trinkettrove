@@ -13,12 +13,12 @@ class RoundStart extends GameState
         protected Game $game,
     ) {
         parent::__construct($game,
-            id: 2,
+            id: 10,
             type: StateType::GAME,
 
             // optional
             description: clienttranslate('Setting up for the round'),
-            transitions: [],
+            transitions: ['' => 20],
             updateGameProgression: false,
             initialPrivate: null,
         );
@@ -48,5 +48,7 @@ class RoundStart extends GameState
         $this->notify->all("marketAdded", '${name} was added to the market timer', [
             "name" => $card[0]["name"]
         ]);
+
+        return '';
     }
 }

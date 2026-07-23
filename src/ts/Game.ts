@@ -1,4 +1,4 @@
-import { PlayerTurn } from "./States/PlayerTurn";
+import { MakeBid } from "./States/MakeBid";
 import { BgaAnimations, BgaCards } from "./libs";
 
 export class Game {
@@ -10,9 +10,9 @@ export class Game {
 
     private marketStock: InstanceType<typeof BgaCards.LineStock<Card>>[] = [];
     private bidStock: InstanceType<typeof BgaCards.HandStock<Card>>
-    private handStock: InstanceType<typeof BgaCards.HandStock<Card>>
+    public handStock: InstanceType<typeof BgaCards.HandStock<Card>>
 
-    private playerTurn: PlayerTurn;
+    private makeBid: MakeBid;
 
     private colorOrder: String[] = ["85568d", "8f2f27", "379d9b", "dc7b70", "db812e", "nimbus", "198a43", "2c5b8d", "efae49", "4d5b2b", "3c2a56", "795133", "404e6c", "2a2a2a"]
 
@@ -21,8 +21,8 @@ export class Game {
         this.bga = bga;
 
         // Declare the State classes
-        this.playerTurn = new PlayerTurn(this, bga);
-        this.bga.states.register('PlayerTurn', this.playerTurn);
+        this.makeBid = new MakeBid(this, bga);
+        this.bga.states.register('MakeBid', this.makeBid);
 
         // Uncomment the next line to show debug informations about state changes in the console. Remove before going to production!
         // this.bga.states.logger = console.log;
@@ -67,6 +67,18 @@ export class Game {
             setupFrontDiv(card, element) {
                 element.style.backgroundPositionX = `-${card.pos % 10}00%`;
                 element.style.backgroundPositionY = `-${Math.floor(card.pos / 10)}00%`;
+
+                gameui.addTooltipHtml(element.id, `
+                    <div style="display: grid; grid-auto-flow: column; gap: 10px">
+                        <div style="width: 128px; height: 178px; background-position: -${card.pos % 10}00% -${Math.floor(card.pos / 10)}00%" class="trinket-front"></div>
+                        <div>
+                            <div style="width: 128px; display: flex; justify-content: center;"><strong>${_(card.name.toString())}</strong></div>
+                            <div><strong>${_("Value: ")}</strong>${card.value}</div>
+                            <div><strong>${_("Points: ")}</strong></div>
+                            <div>${card.points.join(", ")}</div>
+                        </div>
+                    </div>
+                `)
             },
             setupBackDiv(card, element) {
                 element.style.backgroundPosition = `-900% -200%`
